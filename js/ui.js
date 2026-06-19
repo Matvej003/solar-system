@@ -14,6 +14,7 @@ function setMode(m) {
   timeMode = m;
   ['btnR','btnS','btnN','btnF'].forEach(id => {
     const b = document.getElementById(id);
+    if (!b) return;
     b.style.background  = 'transparent';
     b.style.color       = 'rgba(255,255,255,0.65)';
     b.style.borderColor = 'rgba(255,255,255,0.2)';
