@@ -15,14 +15,11 @@ const cameraRig = new THREE.Group();
 cameraRig.add(camera);
 camera.position.set(0, 8, 30);
 
-window.addEventListener('resize', _onResize);
-window.addEventListener('orientationchange', () => setTimeout(_onResize, 200));
-
-function _onResize() {
+window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-}
+});
 
 // ── Shared references (filled by buildScene) ─────────────────────────────────
 let sunMesh      = null;
