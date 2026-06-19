@@ -253,3 +253,8 @@ body {
   pointer-events: all;
   animation: cardOpen 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ── Handy: Reverse-Button ausblenden ───────────────────────────────────────── */
+@media (max-width: 600px) {
+  #btnR { display: none; }
+}
