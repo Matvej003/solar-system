@@ -185,21 +185,32 @@ function updateInfoCardPosition() {
   if (!card.classList.contains('visible')) return;
   if (!detailTarget) return;
 
-  const p = _getPlanetScreenPos(detailTarget);
+  const p    = _getPlanetScreenPos(detailTarget);
   if (!p) return;
 
-  const cardW = 230;
+  const W     = window.innerWidth;
+  const H     = window.innerHeight;
+  const cardW = Math.min(210, W - 20);
   const cardH = card.offsetHeight || 220;
 
-  // Karte rechts neben dem Symbol
-  let left = p.cx + p.sr + 60; // symbol (34px) + gap
-  if (left + cardW > window.innerWidth - 10) {
-    left = p.cx - p.sr - 60 - cardW;
+  // Rechts versuchen
+  let left = p.cx + p.sr + 50;
+  let top  = p.cy - cardH / 2;
+
+  // Rechts kein Platz → links
+  if (left + cardW > W - 10) left = p.cx - p.sr - 50 - cardW;
+
+  // Auch links kein Platz (schmales Handy) → unten zentriert
+  if (left < 10) {
+    left = (W - cardW) / 2;
+    top  = H - cardH - 75;
   }
 
-  let top = p.cy - cardH / 2;
-  top = Math.max(10, Math.min(window.innerHeight - cardH - 10, top));
+  // Immer innerhalb Bildschirm
+  left = Math.max(10, Math.min(W - cardW - 10, left));
+  top  = Math.max(10, Math.min(H - cardH - 10, top));
 
+  card.style.width     = cardW + 'px';
   card.style.left      = left + 'px';
   card.style.top       = top  + 'px';
   card.style.right     = 'auto';

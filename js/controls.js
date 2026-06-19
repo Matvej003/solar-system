@@ -12,6 +12,7 @@ let clickStartX = 0, clickStartY = 0;
 
 // Pinch zoom
 let pinchStart = 0;
+let detailZoom = 1.0;
 
 // VR / Gyro
 let vrMode      = false;
@@ -93,7 +94,7 @@ function updateCamera() {
 
   } else if (view === 'detail' && detailTarget) {
     const r         = detailTarget.isSun ? SUN_DATA.radius : detailTarget.radius;
-    const dist      = r * 3.5;
+    const dist      = r * 3.5 * (typeof detailZoom !== 'undefined' ? detailZoom : 1.0);
     const targetPos = detailTarget.isSun
       ? new THREE.Vector3(0, 0, 0)
       : (planetMeshes.find(m => m.userData.name === detailTarget.name)?.position.clone() || new THREE.Vector3());
@@ -147,6 +148,7 @@ function handleClick(cx, cy) {
   const hits = raycaster.intersectObjects([sunMesh, ...planetMeshes], false);
   if (hits.length > 0 && hits[0].object.userData.name) {
     const pdata = hits[0].object.userData;
+    detailZoom = 1.0;
     if (typeof flyToDetail === 'function') {
       flyToDetail(pdata);
     } else {
@@ -206,7 +208,12 @@ canvas3d.addEventListener('touchmove', e => {
       e.touches[0].clientX - e.touches[1].clientX,
       e.touches[0].clientY - e.touches[1].clientY
     );
-    camDist    = Math.max(5, Math.min(120, camDist * (pinchStart / pinchNow)));
+    const scale = pinchStart / pinchNow;
+    if (view === 'detail') {
+      detailZoom = Math.max(0.4, Math.min(4.0, detailZoom * scale));
+    } else {
+      camDist = Math.max(5, Math.min(120, camDist * scale));
+    }
     pinchStart = pinchNow;
   }
 }, { passive: false });
